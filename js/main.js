@@ -12,6 +12,7 @@
 
   var doc = document;
   var root = doc.documentElement;
+  window.__miladReady = true;
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var FA_DIGITS = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
@@ -227,7 +228,7 @@
       caption: 'باز کردن پک و بررسی وضعیت سلول‌ها'
     },
     {
-      src: 'assets/photo_2026-11-20_17-50-27 (2).jpg',
+      src: 'assets/photo_2026-11-20_17-50-27-2.jpg',
       alt: 'دست‌های تکنسین روی سلول‌های باتری هیبرید',
       kicker: 'بازرسی',
       caption: 'بررسی دقیق سلول‌ها، یکی‌یکی'
@@ -239,7 +240,7 @@
       caption: 'بستن اتصالات با ابزار مخصوص'
     },
     {
-      src: 'assets/photo_2026-11-20_17-50-29 (2).jpg',
+      src: 'assets/photo_2026-11-20_17-50-29-2.jpg',
       alt: 'کنترل پیچ‌های باسبار نارنجی باتری هیبرید',
       kicker: 'کنترل گشتاور',
       caption: 'کنترل گشتاور پیچ‌های باسبار'

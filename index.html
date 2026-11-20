@@ -4,7 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0A6CFF">
-  <script>document.documentElement.classList.add('reveal-ready');</script>
+  <script>
+    document.documentElement.classList.add('reveal-ready');
+    /* اگر فایل js/main.js به هر دلیلی لود نشد، محتوا پنهان نماند */
+    setTimeout(function () {
+      if (!window.__miladReady) document.documentElement.classList.remove('reveal-ready');
+    }, 2000);
+  </script>
+  <noscript>
+    <style>.reveal-ready [data-reveal]{opacity:1!important;transform:none!important}</style>
+  </noscript>
 
   <!-- ============ SEO ============ -->
   <title>کلینیک هیبرید میلاد | تبدیل و تعمیر خودروی هیبریدی در سبزوار</title>
@@ -564,7 +573,7 @@
                    controls playsinline preload="metadata" muted
                    poster="assets/photo_2026-11-20_17-50-26.jpg"
                    aria-label="ویدیوی کارگاه بازسازی باتری هیبرید">
-              <source src="assets/IMG_7658.MOV">
+              <source src="assets/IMG_7658.mp4">
               مرورگر شما از پخش ویدیو پشتیبانی نمی‌کند.
             </video>
             <span class="video-frame__badge" aria-hidden="true">WORKSHOP · MILAD</span>
@@ -574,35 +583,35 @@
             <p class="video-side__now" data-reveal>در حال پخش: <strong id="videoNow">باز کردن پک باتری</strong></p>
             <ol class="video-playlist" id="videoPlaylist" data-reveal data-reveal-delay="1">
               <li>
-                <button class="video-thumb is-active" type="button" data-src="assets/IMG_7658.MOV" data-title="باز کردن پک باتری" data-poster="assets/photo_2026-11-20_17-50-26.jpg" aria-label="پخش ویدیو: باز کردن پک باتری">
+                <button class="video-thumb is-active" type="button" data-src="assets/IMG_7658.mp4" data-title="باز کردن پک باتری" data-poster="assets/photo_2026-11-20_17-50-26.jpg" aria-label="پخش ویدیو: باز کردن پک باتری">
                   <span class="video-thumb__frame"><img src="assets/photo_2026-11-20_17-50-26.jpg" alt="باز کردن پک باتری هیبرید" width="743" height="1280" loading="lazy" decoding="async"></span>
                   <span class="video-thumb__text"><span class="video-thumb__num">۰۱</span><span class="video-thumb__title">باز کردن پک باتری</span></span>
                   <svg class="icon video-thumb__play" aria-hidden="true"><use href="#i-play"/></svg>
                 </button>
               </li>
               <li>
-                <button class="video-thumb" type="button" data-src="assets/IMG_7659.MOV" data-title="بررسی و تست سلول‌ها" data-poster="assets/photo_2026-11-20_17-50-27.jpg" aria-label="پخش ویدیو: بررسی و تست سلول‌ها">
+                <button class="video-thumb" type="button" data-src="assets/IMG_7659.mp4" data-title="بررسی و تست سلول‌ها" data-poster="assets/photo_2026-11-20_17-50-27.jpg" aria-label="پخش ویدیو: بررسی و تست سلول‌ها">
                   <span class="video-thumb__frame"><img src="assets/photo_2026-11-20_17-50-27.jpg" alt="بررسی سلول‌های باتری هیبرید" width="791" height="1280" loading="lazy" decoding="async"></span>
                   <span class="video-thumb__text"><span class="video-thumb__num">۰۲</span><span class="video-thumb__title">بررسی و تست سلول‌ها</span></span>
                   <svg class="icon video-thumb__play" aria-hidden="true"><use href="#i-play"/></svg>
                 </button>
               </li>
               <li>
-                <button class="video-thumb" type="button" data-src="assets/IMG_7707.MOV" data-title="مونتاژ و بستن پک" data-poster="assets/photo_2026-11-20_17-50-28.jpg" aria-label="پخش ویدیو: مونتاژ و بستن پک">
+                <button class="video-thumb" type="button" data-src="assets/IMG_7707.mp4" data-title="مونتاژ و بستن پک" data-poster="assets/photo_2026-11-20_17-50-28.jpg" aria-label="پخش ویدیو: مونتاژ و بستن پک">
                   <span class="video-thumb__frame"><img src="assets/photo_2026-11-20_17-50-28.jpg" alt="مونتاژ و بستن پک باتری" width="780" height="1280" loading="lazy" decoding="async"></span>
                   <span class="video-thumb__text"><span class="video-thumb__num">۰۳</span><span class="video-thumb__title">مونتاژ و بستن پک</span></span>
                   <svg class="icon video-thumb__play" aria-hidden="true"><use href="#i-play"/></svg>
                 </button>
               </li>
               <li>
-                <button class="video-thumb" type="button" data-src="assets/IMG_7711.MOV" data-title="نصب پک روی خودرو" data-poster="assets/photo_2026-11-20_17-50-29.jpg" aria-label="پخش ویدیو: نصب پک روی خودرو">
+                <button class="video-thumb" type="button" data-src="assets/IMG_7711.mp4" data-title="نصب پک روی خودرو" data-poster="assets/photo_2026-11-20_17-50-29.jpg" aria-label="پخش ویدیو: نصب پک روی خودرو">
                   <span class="video-thumb__frame"><img src="assets/photo_2026-11-20_17-50-29.jpg" alt="نصب پک باتری روی خودرو" width="748" height="1280" loading="lazy" decoding="async"></span>
                   <span class="video-thumb__text"><span class="video-thumb__num">۰۴</span><span class="video-thumb__title">نصب پک روی خودرو</span></span>
                   <svg class="icon video-thumb__play" aria-hidden="true"><use href="#i-play"/></svg>
                 </button>
               </li>
               <li>
-                <button class="video-thumb" type="button" data-src="assets/IMG_7712.MOV" data-title="تست نهایی سیستم" data-poster="assets/photo_2026-11-20_17-50-31.jpg" aria-label="پخش ویدیو: تست نهایی سیستم">
+                <button class="video-thumb" type="button" data-src="assets/IMG_7712.mp4" data-title="تست نهایی سیستم" data-poster="assets/photo_2026-11-20_17-50-31.jpg" aria-label="پخش ویدیو: تست نهایی سیستم">
                   <span class="video-thumb__frame"><img src="assets/photo_2026-11-20_17-50-31.jpg" alt="تست نهایی سیستم هیبرید" width="723" height="1280" loading="lazy" decoding="async"></span>
                   <span class="video-thumb__text"><span class="video-thumb__num">۰۵</span><span class="video-thumb__title">تست نهایی سیستم</span></span>
                   <svg class="icon video-thumb__play" aria-hidden="true"><use href="#i-play"/></svg>
