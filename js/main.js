@@ -197,10 +197,11 @@
   }
 
   /* ---------------------------------------------------------
-     7. Newspaper page-flip gallery
+     7. 3D workshop gallery
 
-     Every image in /assets is used once. Sheets are built here so the
-     markup stays lean; each sheet has a printed front and a paper back.
+     A depth carousel: the front photo swings away in 3D while the next
+     one swings in. On touch screens the photo follows the finger, so
+     swiping feels like turning a card over.
      --------------------------------------------------------- */
   var GALLERY = [
     {
@@ -270,28 +271,17 @@
   var counterEl = doc.getElementById('flipCounter');
   var totalEl = doc.getElementById('flipTotal');
   var dotsEl = doc.getElementById('flipDots');
-  var progressEl = doc.getElementById('flipProgress');
-  var prevBtn = doc.getElementById('flipPrev');
-  var nextBtn = doc.getElementById('flipNext');
-  var pauseBtn = doc.getElementById('flipPause');
 
   if (stage && captionEl) {
-    var sheets = [];
+    var cards = [];
     var dots = [];
-    var order = [];
     var current = 0;
-    var animating = false;
-    var paused = false;
-    var autoTimer = null;
-    var AUTOPLAY_MS = 4400;
-    var TURN_MS = 1050;
+    var frame = 0;
 
-    /* --- build sheets --- */
     GALLERY.forEach(function (item, i) {
-      var sheet = doc.createElement('div');
-      sheet.className = 'sheet';
-      sheet.setAttribute('data-index', String(i));
-      sheet.style.zIndex = String(GALLERY.length - i);
+      var card = doc.createElement('div');
+      card.className = 'sheet';
+      card.setAttribute('data-index', String(i));
 
       var front = doc.createElement('div');
       front.className = 'sheet__face sheet__front';
@@ -300,7 +290,7 @@
       img.className = 'sheet__img';
       img.src = encodePath(item.src);
       img.alt = item.alt;
-      img.loading = i === 0 ? 'eager' : 'lazy';
+      img.loading = i < 3 ? 'eager' : 'lazy';
       img.decoding = 'async';
       img.width = 800;
       img.height = 1000;
@@ -336,31 +326,12 @@
       front.appendChild(overlay);
       front.appendChild(meta);
 
-      var back = doc.createElement('div');
-      back.className = 'sheet__face sheet__back';
-      back.setAttribute('aria-hidden', 'true');
-
-      var mark = doc.createElement('img');
-      mark.className = 'sheet__back-mark';
-      mark.src = 'assets/brand/logo-mark.png';
-      mark.alt = '';
-      mark.width = 720;
-      mark.height = 269;
-      mark.loading = 'lazy';
-
-      var backText = doc.createElement('span');
-      backText.className = 'sheet__back-text';
-      backText.textContent = 'کلینیک هیبرید میلاد';
-
-      back.appendChild(mark);
-      back.appendChild(backText);
-
-      sheet.appendChild(front);
-      sheet.appendChild(back);
-      stage.appendChild(sheet);
-      sheets.push(sheet);
-      order.push(i);
+      card.appendChild(front);
+      stage.appendChild(card);
+      cards.push(card);
     });
+
+    if (totalEl) totalEl.textContent = toFa(GALLERY.length);
 
     /* --- dots --- */
     if (dotsEl) {
@@ -371,18 +342,10 @@
         dot.setAttribute('aria-label', 'نمایش تصویر ' + toFa(i + 1));
         if (i === 0) dot.setAttribute('aria-current', 'true');
         dot.addEventListener('click', function () {
-          jumpTo(i);
-          restartAuto();
+          goTo(i);
         });
         dotsEl.appendChild(dot);
         dots.push(dot);
-      });
-    }
-    if (totalEl) totalEl.textContent = toFa(GALLERY.length);
-
-    function applyOrder() {
-      order.forEach(function (sheetIndex, position) {
-        sheets[sheetIndex].style.zIndex = String(GALLERY.length - position);
       });
     }
 
@@ -395,181 +358,62 @@
         if (i === current) dot.setAttribute('aria-current', 'true');
         else dot.removeAttribute('aria-current');
       });
-      // Only the visible sheet is exposed to assistive tech.
-      sheets.forEach(function (sheet, i) {
-        sheet.setAttribute('aria-hidden', i === current ? 'false' : 'true');
+    }
+
+    /* 3D depth: a photo turns and recedes as it drifts away from the middle. */
+    function layout() {
+      frame = 0;
+      var box = stage.getBoundingClientRect();
+      var mid = box.left + box.width / 2;
+      var span = box.width || 1;
+      var nearest = current;
+      var nearestGap = Infinity;
+
+      cards.forEach(function (card) {
+        var box2 = card.getBoundingClientRect();
+        var offset = ((box2.left + box2.width / 2) - mid) / span;
+        var abs = Math.min(1, Math.abs(offset));
+        card.style.setProperty('--ry', (-offset * 17).toFixed(2) + 'deg');
+        card.style.setProperty('--tz', (-abs * 120).toFixed(1) + 'px');
+        card.style.setProperty('--sc', (1 - abs * 0.09).toFixed(3));
+        card.style.setProperty('--op', (1 - abs * 0.34).toFixed(3));
+        var gap = Math.abs(box2.left + box2.width / 2 - mid);
+        if (gap < nearestGap) { nearestGap = gap; nearest = Number(card.getAttribute('data-index')); }
+      });
+
+      if (nearest !== current) {
+        current = nearest;
+        syncUI();
+      }
+    }
+
+    function requestLayout() {
+      if (frame) return;
+      frame = window.setTimeout(function () {
+        frame = 0;
+        layout();
+      }, 16);
+    }
+
+    function goTo(index) {
+      var card = cards[index];
+      if (!card) return;
+      card.scrollIntoView({
+        behavior: reduceMotion ? 'auto' : 'smooth',
+        inline: 'center',
+        block: 'nearest'
       });
     }
 
-    function resetProgress() {
-      if (!progressEl) return;
-      progressEl.classList.remove('is-running');
-      void progressEl.offsetWidth;
-      if (!paused && !reduceMotion) progressEl.classList.add('is-running');
+    stage.addEventListener('scroll', requestLayout, { passive: true });
+    window.addEventListener('resize', requestLayout);
+    if ('ResizeObserver' in window) {
+      new ResizeObserver(requestLayout).observe(stage);
     }
 
-    function clearAuto() {
-      if (autoTimer) {
-        window.clearTimeout(autoTimer);
-        autoTimer = null;
-      }
-    }
-
-    function scheduleAuto() {
-      clearAuto();
-      if (paused || reduceMotion) return;
-      autoTimer = window.setTimeout(function () {
-        turn(1, true);
-      }, AUTOPLAY_MS);
-    }
-
-    function restartAuto() {
-      clearAuto();
-      resetProgress();
-      scheduleAuto();
-    }
-
-    function setPaused(value) {
-      paused = value;
-      if (pauseBtn) {
-        pauseBtn.classList.toggle('is-paused', paused);
-        pauseBtn.setAttribute('aria-pressed', paused ? 'true' : 'false');
-        pauseBtn.setAttribute('aria-label', paused ? 'ادامه ورق زدن خودکار' : 'توقف ورق زدن خودکار');
-      }
-      if (progressEl) progressEl.classList.toggle('is-paused', paused);
-      if (paused) clearAuto();
-      else restartAuto();
-    }
-
-    /* Turn forward: the top sheet lifts from the spine and flips away. */
-    function turn(direction, fromAuto) {
-      if (animating) return;
-      if (direction > 0) {
-        var turning = sheets[order[0]];
-        animating = true;
-
-        current = order[1];
-        syncUI();
-        resetProgress();
-        scheduleAuto();
-
-        turning.classList.add('is-turning');
-
-        window.setTimeout(function () {
-          turning.classList.add('no-anim');
-          turning.classList.remove('is-turning');
-          order.push(order.shift());
-          applyOrder();
-          // force style flush, then re-enable transitions for future turns
-          void turning.offsetWidth;
-          turning.classList.remove('no-anim');
-          animating = false;
-        }, reduceMotion ? 30 : TURN_MS);
-      } else {
-        var incoming = sheets[order[order.length - 1]];
-        animating = true;
-
-        order.unshift(order.pop());
-        applyOrder();
-        incoming.classList.add('is-returning');
-
-        current = order[0];
-        syncUI();
-        resetProgress();
-        scheduleAuto();
-
-        window.setTimeout(function () {
-          incoming.classList.remove('is-returning');
-          animating = false;
-        }, reduceMotion ? 30 : 950);
-      }
-
-      if (fromAuto) { /* nothing extra: timer already re-armed */ }
-    }
-
-    /* Jump straight to a sheet (dots) with a soft paper flash. */
-    function jumpTo(index) {
-      if (animating || index === current) return;
-      var position = order.indexOf(index);
-      if (position < 0) return;
-
-      current = index;
-      order = order.slice(position).concat(order.slice(0, position));
-      applyOrder();
-      syncUI();
-      animating = true;
-      stage.classList.add('is-jumping');
-      window.setTimeout(function () {
-        stage.classList.remove('is-jumping');
-        animating = false;
-      }, 260);
-    }
-
-    /* --- controls --- */
-    if (nextBtn) nextBtn.addEventListener('click', function () { turn(1); restartAuto(); });
-    if (prevBtn) prevBtn.addEventListener('click', function () { turn(-1); restartAuto(); });
-    if (pauseBtn) pauseBtn.addEventListener('click', function () { setPaused(!paused); });
-
-    /* Pause while the reader is looking at a sheet */
-    stage.addEventListener('pointerenter', function () {
-      if (!paused) {
-        clearAuto();
-        if (progressEl) progressEl.classList.add('is-paused');
-      }
-    });
-    stage.addEventListener('pointerleave', function () {
-      if (!paused) restartAuto();
-    });
-    stage.addEventListener('focusin', function () {
-      if (!paused) {
-        clearAuto();
-        if (progressEl) progressEl.classList.add('is-paused');
-      }
-    });
-    stage.addEventListener('focusout', function () {
-      if (!paused) restartAuto();
-    });
-
-    /* Keyboard: RTL reading direction */
-    stage.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowLeft') { e.preventDefault(); turn(1); restartAuto(); }
-      else if (e.key === 'ArrowRight') { e.preventDefault(); turn(-1); restartAuto(); }
-      else if (e.key === 'Home') { e.preventDefault(); jumpTo(0); restartAuto(); }
-      else if (e.key === 'End') { e.preventDefault(); jumpTo(GALLERY.length - 1); restartAuto(); }
-    });
-
-    /* Swipe / drag */
-    var pointerStartX = null;
-    var pointerStartY = null;
-    stage.addEventListener('pointerdown', function (e) {
-      if (e.pointerType === 'mouse' && e.button !== 0) return;
-      pointerStartX = e.clientX;
-      pointerStartY = e.clientY;
-    });
-    stage.addEventListener('pointerup', function (e) {
-      if (pointerStartX === null) return;
-      var dx = e.clientX - pointerStartX;
-      var dy = e.clientY - pointerStartY;
-      pointerStartX = null;
-      pointerStartY = null;
-      if (Math.abs(dx) < 44 || Math.abs(dx) < Math.abs(dy)) return;
-      if (dx < 0) turn(1); else turn(-1);
-      restartAuto();
-    });
-    stage.addEventListener('pointercancel', function () {
-      pointerStartX = null;
-      pointerStartY = null;
-    });
-
-    /* Pause when the tab is hidden */
-    doc.addEventListener('visibilitychange', function () {
-      if (doc.hidden) clearAuto();
-      else if (!paused) restartAuto();
-    });
-
-    applyOrder();
     syncUI();
-    restartAuto();
+    layout();
+    window.setTimeout(layout, 120);
   }
 
   /* ---------------------------------------------------------
