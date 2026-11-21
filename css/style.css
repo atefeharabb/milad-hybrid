@@ -1489,27 +1489,41 @@ a.contact-card:hover .contact-card__arrow{opacity:1;transform:translateX(-4px)}
   .pay-card__copy{width:100%;justify-content:center}
   .copy-toast{inset-inline:14px;inset-block-end:calc(14px + env(safe-area-inset-bottom,0px));text-align:center}
 }
-/* ---------- 35. Phone hero: photo as a full band, never stretched ---------- */
+/* ---------- 35. Phone hero: one full-bleed photo surface behind the text ---------- */
 @media (max-width:720px){
   .hero{
-    display:block;min-height:0;
-    padding:0 0 44px;
-    background:linear-gradient(170deg,#00251A 0%,#001B13 100%);
+    display:flex;flex-direction:column;justify-content:flex-end;
+    min-height:min(100svh,820px);
+    padding:0 0 42px;
+    background:#001A12;
   }
-  .hero__media{
-    position:relative;inset:auto;z-index:0;
-    height:auto;aspect-ratio:16/11;overflow:hidden;
+
+  /* 1) ambient layer: the same shot, enlarged and blurred, fills every edge */
+  .hero__media{position:absolute;inset:0;z-index:0;height:100%;overflow:hidden}
+  .hero__media::before{
+    content:"";position:absolute;inset:-8%;
+    background:url(../assets/photo_2026-11-20_12-10-39.jpg) center/cover no-repeat;
+    filter:blur(32px) saturate(.95) brightness(.34);
+    transform:scale(1.05);
   }
+
+  /* 2) the real photo, complete and edge to edge, dissolving into the ambient layer */
   .hero__img{
-    height:100%;transform:none!important;
-    object-position:50% 42%;
+    position:absolute;inset-block-start:0;inset-inline:0;
+    width:100%;height:auto;aspect-ratio:4/3;
+    object-fit:cover;object-position:50% 50%;
+    transform:none!important;will-change:auto;
+    -webkit-mask-image:linear-gradient(to bottom,#000 0%,#000 52%,rgba(0,0,0,.82) 68%,rgba(0,0,0,.35) 84%,transparent 100%);
+    mask-image:linear-gradient(to bottom,#000 0%,#000 52%,rgba(0,0,0,.82) 68%,rgba(0,0,0,.35) 84%,transparent 100%);
   }
+
+  /* 3) scrim: keeps the headline readable over the photo, solid green at the floor */
   .hero__overlay{
-    background:linear-gradient(to top,rgba(0,26,18,.98) 0%,rgba(0,26,18,.42) 38%,rgba(0,26,18,.10) 72%,rgba(0,26,18,.42) 100%);
+    background:
+      linear-gradient(to bottom,rgba(0,26,18,.24) 0%,rgba(0,26,18,.08) 20%,rgba(0,26,18,.44) 42%,rgba(0,26,18,.78) 60%,rgba(0,26,18,.96) 78%,#001A12 100%);
   }
   .hero__glow{display:none}
-  .hero__inner{position:relative;z-index:1;padding-block-start:26px}
-  .hero{padding-block-end:44px}
+  .hero__inner{position:relative;z-index:1;padding-block-start:calc(69vw + 4px)}
 }
 
 @media (prefers-reduced-motion: reduce){
