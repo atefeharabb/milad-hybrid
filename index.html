@@ -74,6 +74,8 @@
 
 <body id="top">
 
+  <div class="scroll-progress" aria-hidden="true"><span id="scrollProgress"></span></div>
+
   <!-- ================= SVG ICON SPRITE ================= -->
   <svg class="sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
     <symbol id="i-phone" viewBox="0 0 24 24">
@@ -158,6 +160,10 @@
     <symbol id="i-spark" viewBox="0 0 24 24">
       <path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/>
     </symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24">
+      <rect x="8.5" y="8.5" width="12" height="12" rx="2.6"/>
+      <path d="M15.5 5.5A2 2 0 0 0 13.5 3.5H6A2.5 2.5 0 0 0 3.5 6v7.5a2 2 0 0 0 2 2"/>
+    </symbol>
     <symbol id="i-route" viewBox="0 0 24 24">
       <circle cx="6" cy="18.5" r="2.5"/>
       <circle cx="18" cy="5.5" r="2.5"/>
@@ -171,8 +177,8 @@
   <div class="topbar">
     <div class="container topbar__inner">
       <p class="topbar__item">
-        <svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg>
-        سبزوار، چهارراه امیرمسعود، نبش امیرمسعود ۲۰
+        <svg class="icon" aria-hidden="true"><use href="#i-car"/></svg>
+        تبدیل، تعمیر و نگهداری خودروهای هیبریدی · سبزوار
       </p>
       <div class="topbar__meta">
         <p class="topbar__item">
@@ -198,12 +204,19 @@
         </span>
       </a>
 
+      <p class="header__address">
+        <svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg>
+        <span>سبزوار، چهارراه امیرمسعود، نبش امیرمسعود ۲۰</span>
+      </p>
+
       <nav class="nav" id="primaryNav" aria-label="منوی اصلی">
         <ul class="nav__list">
+          <li><a class="nav__link" href="#about">معرفی</a></li>
           <li><a class="nav__link" href="#why">چرا هیبرید؟</a></li>
           <li><a class="nav__link" href="#services">خدمات</a></li>
+          <li><a class="nav__link" href="#credentials">گواهی و مجوز</a></li>
           <li><a class="nav__link" href="#gallery">کارگاه</a></li>
-          <li><a class="nav__link" href="#process">مراحل کار</a></li>
+          <li><a class="nav__link" href="#payment">پرداخت</a></li>
           <li><a class="nav__link" href="#contact">تماس</a></li>
         </ul>
         <div class="nav__footer">
@@ -245,13 +258,13 @@
           </p>
 
           <h1 class="hero__title" id="heroTitle" data-reveal data-reveal-delay="1">
-            خودروت را هیبرید کن؛<br>
-            <span class="hero__title-accent">نصف مصرف سوخت.</span>
+            هیبرید، حساب‌وکتابِ سوددهِ<br>
+            <span class="hero__title-accent">هر کیلومتر</span>
           </h1>
 
           <p class="hero__lead" data-reveal data-reveal-delay="2">
-            تبدیل تخصصی خودرو به هیبرید، تعمیر و بازسازی باتری، و عیب‌یابی دقیق با دیاگ پیشرفته —
-            با ضمانت کتبی، قطعات اصلی و تیمی که کارش همین است.
+            هیبرید شدن فقط یک تغییر فنی نیست؛ یک تصمیم اقتصادی است که هر روز، در پمپ بنزین،
+            در سرویس دوره‌ای و حتی در لحظه فروش خودرو، خودش را نشان می‌دهد.
           </p>
 
           <div class="hero__cta" data-reveal data-reveal-delay="3">
@@ -272,17 +285,29 @@
           </ul>
         </div>
 
-        <aside class="hero__panel" data-reveal data-reveal-delay="3" aria-label="ویژه‌نامه هیبرید">
-          <div class="hero__panel-top">
-            <span class="hero__panel-tag">ویژه‌نامه هیبرید</span>
-            <span class="hero__panel-issue">شماره ۱۲۴</span>
-          </div>
+        <aside class="hero__panel" data-reveal data-reveal-delay="3" aria-label="تبلیغ اصلی: تبدیل هیبرید و اطلاعات تماس">
+          <p class="hero__panel-tag">تبدیل هیبرید با ضمانت کتبی</p>
           <p class="hero__panel-number"><span>تا</span> ۵۰٪</p>
           <p class="hero__panel-label">کاهش مصرف سوخت در مسیر شهری</p>
-          <ul class="hero__panel-list">
-            <li><svg class="icon" aria-hidden="true"><use href="#i-diag"/></svg> تشخیص دقیق با دیاگ</li>
-            <li><svg class="icon" aria-hidden="true"><use href="#i-battery"/></svg> بازسازی باتری هیبرید</li>
-            <li><svg class="icon" aria-hidden="true"><use href="#i-shield"/></svg> تحویل با ضمانت</li>
+          <ul class="hero__panel-contact">
+            <li>
+              <a href="tel:09120927990">
+                <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+                <span>۰۹۱۲۰۹۲۷۹۹۰</span>
+              </a>
+            </li>
+            <li>
+              <a href="https://instagram.com/amin.alyani" target="_blank" rel="noopener noreferrer">
+                <svg class="icon" aria-hidden="true"><use href="#i-instagram"/></svg>
+                <span>@amin.alyani</span>
+              </a>
+            </li>
+            <li>
+              <span class="hero__panel-address">
+                <svg class="icon" aria-hidden="true"><use href="#i-pin"/></svg>
+                <span>سبزوار، چهارراه امیرمسعود، نبش امیرمسعود ۲۰</span>
+              </span>
+            </li>
           </ul>
         </aside>
       </div>
@@ -291,6 +316,85 @@
         <span>بیشتر بخوانید</span>
         <span class="hero__scroll-line" aria-hidden="true"></span>
       </a>
+    </section>
+
+    <!-- ================= INTRODUCTION + CERTIFICATES ================= -->
+    <section class="section section--about" id="about" aria-labelledby="aboutTitle">
+      <div class="container about__layout">
+        <div class="about__intro">
+          <p class="kicker" data-reveal>معرفی مجموعه</p>
+          <h2 class="display display--sm" id="aboutTitle" data-reveal data-reveal-delay="1">
+            با مدیریت<br><span class="marker">مهندس امین علیانی</span>
+          </h2>
+          <p class="about__text" data-reveal data-reveal-delay="2">
+            کلینیک تخصصی خودروهای هیبریدی میلاد با مدیریت مهندس امین علیانی و با تمرکز کامل روی
+            سیستم‌های هیبریدی و برقی خودرو کار می‌کند؛ از تبدیل خودرو و بازسازی باتری تا عیب‌یابی
+            تخصصی، همه با آموزش تخصصی، ابزار درست و ضمانت کتبی.
+          </p>
+          <ul class="about__facts" data-reveal data-reveal-delay="2">
+            <li>گواهی دوره تخصصی خودروهای برقی و هیبریدی — سطح A و B از Asia 2020</li>
+            <li>پروانه عضویت کارشناسان رسمی، رشته خدمات خودرویی</li>
+          </ul>
+          <div class="about__contact" data-reveal data-reveal-delay="3">
+            <a class="about__chip" href="tel:09120927990">
+              <svg class="icon" aria-hidden="true"><use href="#i-phone"/></svg>
+              <span>۰۹۱۲۰۹۲۷۹۹۰</span>
+            </a>
+            <a class="about__chip" href="https://instagram.com/amin.alyani" target="_blank" rel="noopener noreferrer">
+              <svg class="icon" aria-hidden="true"><use href="#i-instagram"/></svg>
+              <span>@amin.alyani</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="cert-slider" id="credentials" data-reveal data-reveal-delay="2"
+             aria-roledescription="اسلایدشو" aria-label="گواهی‌ها و مجوزها">
+          <div class="cert-slider__stage" id="certStage">
+            <figure class="cert-slide" data-pos="0">
+              <img src="govahi/straightened_certificate.jpg"
+                   alt="پروانه عضویت انجمن کارشناسان رسمی به نام امین علیانی"
+                   width="1513" height="1053" loading="lazy" decoding="async">
+              <figcaption>
+                <span class="cert-slide__tag">پروانه رسمی</span>
+                پروانه عضویت کارشناسان رسمی — رشته خدمات خودرویی
+              </figcaption>
+            </figure>
+
+            <figure class="cert-slide" data-pos="1">
+              <img src="govahi/photo_2026-11-21_20-26-40.jpg"
+                   alt="گواهی دوره تخصصی خودروهای برقی و هیبریدی، سطح B — Asia 2020"
+                   width="1280" height="960" loading="lazy" decoding="async">
+              <figcaption>
+                <span class="cert-slide__tag">سطح B</span>
+                گواهی دوره تخصصی خودروهای برقی و هیبریدی — سطح B، Asia 2020
+              </figcaption>
+            </figure>
+
+            <figure class="cert-slide" data-pos="2">
+              <img src="govahi/photo_2026-11-21_20-26-56.jpg"
+                   alt="گواهی دوره تخصصی خودروهای برقی و هیبریدی، سطح A — Asia 2020"
+                   width="1280" height="960" loading="lazy" decoding="async">
+              <figcaption>
+                <span class="cert-slide__tag">سطح A</span>
+                گواهی دوره تخصصی خودروهای برقی و هیبریدی — سطح A، Asia 2020
+              </figcaption>
+            </figure>
+          </div>
+
+          <div class="cert-slider__bar">
+            <div class="cert-dots" id="certDots" role="group" aria-label="انتخاب گواهی"></div>
+            <div class="cert-nav">
+              <button class="cert-btn" type="button" id="certPrev" aria-label="گواهی قبلی" aria-controls="certStage">
+                <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
+              </button>
+              <button class="cert-btn" type="button" id="certNext" aria-label="گواهی بعدی" aria-controls="certStage">
+                <svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="cert-progress" aria-hidden="true"><span id="certProgress"></span></div>
+        </div>
+      </div>
     </section>
 
     <!-- ================= TICKER ================= -->
@@ -331,27 +435,15 @@
     <section class="section section--editorial" id="why" aria-labelledby="whyTitle">
       <div class="container">
 
-        <!-- Newspaper masthead -->
-        <div class="masthead" data-reveal>
-          <span class="masthead__side">ویژه‌نامه</span>
-          <div class="masthead__center">
-            <span class="masthead__rule" aria-hidden="true"></span>
-            <span class="masthead__meta">آبان ۱۴۰۵ · شماره ۱۲۴ · صفحه ۰۲</span>
-            <span class="masthead__rule" aria-hidden="true"></span>
-          </div>
-          <span class="masthead__side masthead__side--ghost">هیبرید</span>
-        </div>
-
         <div class="editorial">
           <header class="editorial__head">
-            <p class="kicker" data-reveal>پرونده ویژه · چرا هیبرید؟</p>
-            <h2 class="display" id="whyTitle" data-reveal data-reveal-delay="1">
-              هیبرید، حساب‌وکتابِ سوددهِ<br>
-              <span class="marker">هر کیلومتر</span>
+            <p class="kicker" data-reveal>چرا هیبرید؟</p>
+            <h2 class="display display--sm" id="whyTitle" data-reveal data-reveal-delay="1">
+              یک تصمیم اقتصادی،<br><span class="marker">نه یک هزینه</span>
             </h2>
             <p class="deck" data-reveal data-reveal-delay="2">
-              هیبرید شدن فقط یک تغییر فنی نیست؛ یک تصمیم اقتصادی است که هر روز، در پمپ بنزین،
-              در سرویس دوره‌ای و حتی در لحظه فروش خودرو، خودش را نشان می‌دهد.
+              بی‌حاشیه توضیح می‌دهیم سیستم هیبرید چطور کار می‌کند و چرا برای خودروی شما
+              حساب‌وکتابِ سوددهی دارد.
             </p>
           </header>
 
@@ -396,7 +488,6 @@
               </blockquote>
 
               <div class="adbox">
-                <span class="adbox__tag">تبلیغ</span>
                 <p class="adbox__title">تبدیل هیبرید با ضمانت کتبی</p>
                 <p class="adbox__text">مشاوره رایگان، برآورد شفاف، اجرای تخصصی. همین امروز تماس بگیرید.</p>
                 <a class="adbox__link" href="tel:09120927990">
@@ -493,11 +584,11 @@
           <div class="gallery__intro">
             <p class="kicker" data-reveal>آرشیو تصویری · کارگاه میلاد</p>
             <h2 class="display display--sm" id="galleryTitle" data-reveal data-reveal-delay="1">
-              برگ‌هایی از<br><span class="marker">داخل کارگاه</span>
+              تصاویری از<br><span class="marker">داخل کارگاه</span>
             </h2>
             <p class="gallery__text" data-reveal data-reveal-delay="2">
-              هر برگ، یک مرحله از کار واقعی ماست: از باز کردن پک باتری تا تست نهایی.
-              صفحه‌ها خودشان ورق می‌خورند؛ می‌توانید دستی هم ورق بزنید.
+              هر تصویر، یک مرحله از کار واقعی ماست: از باز کردن پک باتری تا تست نهایی.
+              تصاویر خودشان ورق می‌خورند؛ می‌توانید دستی هم جابه‌جا کنید.
             </p>
 
             <dl class="gallery__meta" data-reveal data-reveal-delay="3">
@@ -510,25 +601,25 @@
                 <dd>سبزوار · کارگاه میلاد</dd>
               </div>
               <div>
-                <dt>برگ</dt>
+                <dt>تصویر</dt>
                 <dd><span id="flipCounter">۰۱</span> / <span id="flipTotal">۱۰</span></dd>
               </div>
             </dl>
 
             <div class="gallery__controls" data-reveal data-reveal-delay="3">
               <div class="gallery__buttons">
-                <button class="flip-btn" type="button" id="flipPrev" aria-label="برگ قبلی" aria-controls="flipStage">
+                <button class="flip-btn" type="button" id="flipPrev" aria-label="تصویر قبلی" aria-controls="flipStage">
                   <svg class="icon" aria-hidden="true"><use href="#i-arrow-right"/></svg>
                 </button>
                 <button class="flip-btn" type="button" id="flipPause" aria-pressed="false" aria-label="توقف ورق زدن خودکار">
                   <svg class="icon flip-btn__pause" aria-hidden="true"><use href="#i-pause"/></svg>
                   <svg class="icon flip-btn__play" aria-hidden="true"><use href="#i-play"/></svg>
                 </button>
-                <button class="flip-btn" type="button" id="flipNext" aria-label="برگ بعدی" aria-controls="flipStage">
+                <button class="flip-btn" type="button" id="flipNext" aria-label="تصویر بعدی" aria-controls="flipStage">
                   <svg class="icon" aria-hidden="true"><use href="#i-arrow-left"/></svg>
                 </button>
               </div>
-              <p class="gallery__hint">برای ورق زدن، بکشید یا از کلیدهای جهت‌دار استفاده کنید.</p>
+              <p class="gallery__hint">برای جابه‌جایی، بکشید یا از کلیدهای جهت‌دار استفاده کنید.</p>
             </div>
           </div>
 
@@ -762,6 +853,67 @@
       </div>
     </section>
 
+    <!-- ================= PAYMENT ================= -->
+    <section class="section section--payment" id="payment" aria-labelledby="paymentTitle">
+      <div class="container">
+        <header class="section-head">
+          <div>
+            <p class="kicker" data-reveal>پرداخت</p>
+            <h2 class="display display--sm" id="paymentTitle" data-reveal data-reveal-delay="1">
+              پرداخت هزینه<br><span class="marker">خدمات انجام‌شده</span>
+            </h2>
+          </div>
+          <p class="section-head__aside" data-reveal data-reveal-delay="2">
+            اگر هزینه خدمات خودروی شما مشخص شده است، مبلغ را به یکی از حساب‌های زیر واریز کنید
+            و تصویر رسید را برای ما بفرستید.
+          </p>
+        </header>
+
+        <div class="pay-grid">
+          <article class="pay-card" data-reveal>
+            <div class="pay-card__media">
+              <img src="bank-card/photo_2026-11-21_20-28-18.jpg"
+                   alt="کارت بانک قرض‌الحسنه مهر ایران به نام امین علیانی"
+                   width="1280" height="800" loading="lazy" decoding="async">
+            </div>
+            <div class="pay-card__body">
+              <p class="pay-card__label">شماره کارت</p>
+              <p class="pay-card__value" dir="ltr">۶۰۶۳ ۷۳۱۱ ۱۳۸۹ ۷۴۴۲</p>
+              <p class="pay-card__meta">بانک قرض‌الحسنه مهر ایران · به نام امین علیانی</p>
+              <button class="pay-card__copy" type="button" data-copy="6063731113897442" data-copy-label="شماره کارت">
+                <svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>
+                <span data-copy-text>کپی شماره کارت</span>
+              </button>
+            </div>
+          </article>
+
+          <article class="pay-card" data-reveal data-reveal-delay="1">
+            <div class="pay-card__media">
+              <img src="bank-card/photo_2026-11-21_20-28-37.jpg"
+                   alt="کارت شماره شبای بانک قرض‌الحسنه مهر ایران به نام امین علیانی"
+                   width="1280" height="853" loading="lazy" decoding="async">
+            </div>
+            <div class="pay-card__body">
+              <p class="pay-card__label">شماره شبا</p>
+              <p class="pay-card__value" dir="ltr">IR۳۷ ۰۶۰۰ ۳۶۱۵ ۷۰۰۰ ۰۵۵۲ ۶۲۰۰ ۰۲</p>
+              <p class="pay-card__meta">بانک قرض‌الحسنه مهر ایران · به نام امین علیانی</p>
+              <button class="pay-card__copy" type="button" data-copy="IR370600361570000552620002" data-copy-label="شماره شبا">
+                <svg class="icon" aria-hidden="true"><use href="#i-copy"/></svg>
+                <span data-copy-text>کپی شماره شبا</span>
+              </button>
+            </div>
+          </article>
+        </div>
+
+        <p class="pay-note" data-reveal>
+          لطفاً پس از پرداخت، تصویر رسید را در واتساپ یا دایرکت اینستاگرام برای ما بفرستید تا
+          پرونده خدمات خودروی شما ثبت شود.
+        </p>
+      </div>
+
+      <div class="copy-toast" id="copyToast" role="status" aria-live="polite">کپی شد</div>
+    </section>
+
     <!-- ================= CONTACT ================= -->
     <section class="section section--contact" id="contact" aria-labelledby="contactTitle">
       <div class="container">
@@ -855,11 +1007,12 @@
         <nav class="footer__nav" aria-label="دسترسی سریع">
           <h2 class="footer__title">دسترسی سریع</h2>
           <ul>
+            <li><a href="#about">معرفی و مدیریت</a></li>
             <li><a href="#why">چرا هیبرید؟</a></li>
             <li><a href="#services">خدمات</a></li>
+            <li><a href="#credentials">گواهی و مجوز</a></li>
             <li><a href="#gallery">گالری کارگاه</a></li>
-            <li><a href="#video">ویدیو</a></li>
-            <li><a href="#process">مراحل کار</a></li>
+            <li><a href="#payment">پرداخت هزینه</a></li>
             <li><a href="#contact">تماس و آدرس</a></li>
           </ul>
         </nav>

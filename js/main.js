@@ -308,10 +308,6 @@
       var overlay = doc.createElement('div');
       overlay.className = 'sheet__overlay';
 
-      var page = doc.createElement('span');
-      page.className = 'sheet__page';
-      page.textContent = 'صفحه ' + toFa(pad2(i + 1));
-
       var meta = doc.createElement('div');
       meta.className = 'sheet__meta';
 
@@ -325,9 +321,19 @@
 
       meta.appendChild(kicker);
       meta.appendChild(caption);
+
+      /* Soft blurred copy fills the frame so the real photo is never cropped. */
+      var backdrop = doc.createElement('img');
+      backdrop.className = 'sheet__bg';
+      backdrop.src = encodePath(item.src);
+      backdrop.alt = '';
+      backdrop.setAttribute('aria-hidden', 'true');
+      backdrop.loading = 'lazy';
+      backdrop.decoding = 'async';
+
+      front.appendChild(backdrop);
       front.appendChild(img);
       front.appendChild(overlay);
-      front.appendChild(page);
       front.appendChild(meta);
 
       var back = doc.createElement('div');
@@ -344,7 +350,7 @@
 
       var backText = doc.createElement('span');
       backText.className = 'sheet__back-text';
-      backText.textContent = 'ویژه‌نامه هیبرید · میلاد';
+      backText.textContent = 'کلینیک هیبرید میلاد';
 
       back.appendChild(mark);
       back.appendChild(backText);
@@ -362,7 +368,7 @@
         var dot = doc.createElement('button');
         dot.type = 'button';
         dot.className = 'book__dot';
-        dot.setAttribute('aria-label', 'نمایش برگ ' + toFa(i + 1));
+        dot.setAttribute('aria-label', 'نمایش تصویر ' + toFa(i + 1));
         if (i === 0) dot.setAttribute('aria-current', 'true');
         dot.addEventListener('click', function () {
           jumpTo(i);
@@ -648,4 +654,190 @@
   window.addEventListener('resize', syncHeaderVar);
   window.addEventListener('load', syncHeaderVar);
   syncHeaderVar();
+
+  /* ---------------------------------------------------------
+     10. Introduction: certificate slider
+     --------------------------------------------------------- */
+  var certRoot = doc.getElementById('credentials');
+  if (certRoot) {
+    var certSlides = Array.prototype.slice.call(certRoot.querySelectorAll('.cert-slide'));
+    var certStage = doc.getElementById('certStage');
+    var certDots = doc.getElementById('certDots');
+    var certPrev = doc.getElementById('certPrev');
+    var certNext = doc.getElementById('certNext');
+    var certBar = doc.getElementById('certProgress');
+    var certIndex = 0;
+    var certTimer = null;
+    var certHover = false;
+    var CERT_MS = 5200;
+
+    function certPaintProgress(run) {
+      if (!certBar) return;
+      certBar.classList.remove('is-running');
+      void certBar.offsetWidth;
+      if (run && !reduceMotion && !certHover) certBar.classList.add('is-running');
+    }
+
+    function certRender(index) {
+      if (!certSlides.length) return;
+      certIndex = (index + certSlides.length) % certSlides.length;
+      certSlides.forEach(function (slide, n) {
+        var pos = n - certIndex;
+        if (pos > certSlides.length / 2) pos -= certSlides.length;
+        if (pos < -certSlides.length / 2) pos += certSlides.length;
+        slide.setAttribute('data-pos', String(pos));
+        slide.setAttribute('aria-hidden', pos === 0 ? 'false' : 'true');
+      });
+      if (certDots) {
+        Array.prototype.forEach.call(certDots.children, function (dot, n) {
+          dot.classList.toggle('is-active', n === certIndex);
+          if (n === certIndex) dot.setAttribute('aria-current', 'true');
+          else dot.removeAttribute('aria-current');
+        });
+      }
+      certPaintProgress(true);
+    }
+
+    function certStop() {
+      if (certTimer) {
+        window.clearTimeout(certTimer);
+        certTimer = null;
+      }
+    }
+
+    function certSchedule() {
+      certStop();
+      if (reduceMotion || certHover) return;
+      certTimer = window.setTimeout(function () {
+        certRender(certIndex + 1);
+        certSchedule();
+      }, CERT_MS);
+    }
+
+    if (certDots) {
+      certSlides.forEach(function (slide, n) {
+        var dot = doc.createElement('button');
+        dot.type = 'button';
+        dot.className = 'cert-dot';
+        dot.setAttribute('aria-label', 'نمایش گواهی ' + toFa(n + 1));
+        dot.addEventListener('click', function () {
+          certRender(n);
+          certSchedule();
+        });
+        certDots.appendChild(dot);
+      });
+    }
+
+    if (certPrev) certPrev.addEventListener('click', function () { certRender(certIndex - 1); certSchedule(); });
+    if (certNext) certNext.addEventListener('click', function () { certRender(certIndex + 1); certSchedule(); });
+
+    certRoot.addEventListener('pointerenter', function () { certHover = true; certStop(); certPaintProgress(false); });
+    certRoot.addEventListener('pointerleave', function () { certHover = false; certSchedule(); });
+    certRoot.addEventListener('focusin', function () { certHover = true; certStop(); certPaintProgress(false); });
+    certRoot.addEventListener('focusout', function () { certHover = false; certSchedule(); });
+
+    doc.addEventListener('visibilitychange', function () {
+      if (doc.hidden) certStop();
+      else certSchedule();
+    });
+
+    if (certStage) {
+      var certStartX = null;
+      certStage.addEventListener('pointerdown', function (e) { certStartX = e.clientX; });
+      certStage.addEventListener('pointerup', function (e) {
+        if (certStartX === null) return;
+        var dx = e.clientX - certStartX;
+        certStartX = null;
+        if (Math.abs(dx) < 40) return;
+        certRender(certIndex + (dx < 0 ? 1 : -1));
+        certSchedule();
+      });
+      certStage.addEventListener('pointercancel', function () { certStartX = null; });
+    }
+
+    certRender(0);
+    certSchedule();
+  }
+
+  /* ---------------------------------------------------------
+     11. Copy card / SHEBA number
+     --------------------------------------------------------- */
+  var copyToast = doc.getElementById('copyToast');
+  var copyToastTimer = null;
+
+  function showCopyToast(message) {
+    if (!copyToast) return;
+    copyToast.textContent = message;
+    copyToast.classList.add('is-visible');
+    if (copyToastTimer) window.clearTimeout(copyToastTimer);
+    copyToastTimer = window.setTimeout(function () {
+      copyToast.classList.remove('is-visible');
+    }, 2400);
+  }
+
+  Array.prototype.forEach.call(doc.querySelectorAll('[data-copy]'), function (button) {
+    button.addEventListener('click', function () {
+      var value = button.getAttribute('data-copy') || '';
+      var label = button.getAttribute('data-copy-label') || 'شماره';
+      var textEl = button.querySelector('[data-copy-text]');
+      var original = textEl ? textEl.textContent : '';
+
+      function copied() {
+        button.classList.add('is-copied');
+        if (textEl) textEl.textContent = 'کپی شد';
+        showCopyToast(label + ' کپی شد');
+        window.setTimeout(function () {
+          button.classList.remove('is-copied');
+          if (textEl) textEl.textContent = original;
+        }, 2000);
+      }
+
+      function fallbackCopy() {
+        try {
+          var field = doc.createElement('textarea');
+          field.value = value;
+          field.setAttribute('readonly', '');
+          field.style.position = 'fixed';
+          field.style.insetBlockStart = '-1000px';
+          doc.body.appendChild(field);
+          field.select();
+          doc.execCommand('copy');
+          doc.body.removeChild(field);
+          copied();
+        } catch (err) {
+          showCopyToast('کپی نشد؛ لطفاً دستی انتخاب کنید');
+        }
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(value).then(copied, fallbackCopy);
+      } else {
+        fallbackCopy();
+      }
+    });
+  });
+
+  /* ---------------------------------------------------------
+     12. Reading progress bar
+     --------------------------------------------------------- */
+  var scrollBar = doc.getElementById('scrollProgress');
+  var scrollQueued = false;
+
+  function paintScrollProgress() {
+    scrollQueued = false;
+    if (!scrollBar) return;
+    var max = doc.documentElement.scrollHeight - window.innerHeight;
+    var ratio = max > 0 ? Math.min(Math.max(window.scrollY / max, 0), 1) : 0;
+    scrollBar.style.transform = 'scaleX(' + ratio.toFixed(4) + ')';
+  }
+
+  if (scrollBar) {
+    window.addEventListener('scroll', function () {
+      if (scrollQueued) return;
+      scrollQueued = true;
+      requestAnimationFrame(paintScrollProgress);
+    }, { passive: true });
+    window.addEventListener('resize', paintScrollProgress);
+    paintScrollProgress();
+  }
 })();
