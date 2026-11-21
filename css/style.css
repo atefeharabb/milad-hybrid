@@ -589,13 +589,23 @@ input,textarea{font:inherit}
   display:flex;gap:clamp(12px,2.4vw,20px);
   overflow-x:auto;overflow-y:hidden;
   scroll-snap-type:x mandatory;
+  scroll-behavior:smooth;
+  overscroll-behavior-x:contain;
   padding-block:16px 8px;
   -webkit-overflow-scrolling:touch;
   scrollbar-width:none;
   outline-offset:6px;
+  cursor:grab;
 }
 .book__stage::-webkit-scrollbar{display:none}
 .book__stage:focus-visible{outline:2px solid var(--green-dark)}
+.book__stage.is-dragging{
+  cursor:grabbing;
+  scroll-snap-type:none;
+  scroll-behavior:auto;
+  -webkit-user-select:none;user-select:none;
+}
+.book__stage.is-scrolling .sheet{transition:none}
 
 .sheet{
   position:relative;flex:0 0 auto;
@@ -634,15 +644,6 @@ input,textarea{font:inherit}
 }
 .sheet__kicker::before{content:"";width:14px;height:1px;background:var(--accent)}
 .sheet__caption{font-size:clamp(.92rem,.85rem + .3vw,1.06rem);font-weight:700;line-height:1.85;text-wrap:balance}
-.sheet__page{
-  position:absolute;inset-block-start:14px;inset-inline-start:14px;z-index:2;
-  display:inline-flex;align-items:center;gap:6px;
-  padding:5px 11px;border-radius:var(--r-pill);
-  font-size:.66rem;font-weight:700;color:var(--navy);
-  background:rgba(255,255,255,.9);
-  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
-  box-shadow:0 8px 20px -14px rgba(0,0,0,.6);
-}
 .book__captionbar{
   display:flex;align-items:flex-start;justify-content:space-between;gap:16px;
   margin-block-start:14px;padding-inline:4px;
@@ -1072,7 +1073,6 @@ a.contact-card:hover .contact-card__arrow{opacity:1;transform:translateX(-4px)}
   .hero__img{transform:scale(1.04)!important}
   .sheet{transition:none!important}
   .ticker__track{animation:none!important}
-  .book__progress-bar.is-running{animation:none!important;transform:scaleX(0)}
   .hero__scroll-line::after{animation:none}
   .eyebrow__dot{animation:none}
 }
@@ -1087,7 +1087,6 @@ a.contact-card:hover .contact-card__arrow{opacity:1;transform:translateX(-4px)}
 }
 
 /* ---------- 25. 3D carousel states ---------- */
-.book__stage.is-jumping .sheet{filter:brightness(1.06) saturate(1.06)}
 .book__dot[aria-current="true"]{width:22px;border-radius:4px;background:var(--green-dark)}
 .book__stage:focus-visible{outline:2px solid var(--green-dark)}
 
@@ -1366,7 +1365,6 @@ a.contact-card:hover .contact-card__arrow{opacity:1;transform:translateX(-4px)}
   object-fit:contain;object-position:center;
   filter:saturate(.98) contrast(1.02);
 }
-.sheet__page{display:none}
 
 /* ---------- 32. Scroll progress ---------- */
 .scroll-progress{
@@ -1402,7 +1400,7 @@ a.contact-card:hover .contact-card__arrow{opacity:1;transform:translateX(-4px)}
 .trust__item:hover{transform:translateY(-3px)}
 .stat{transition:transform .45s var(--ease),border-color .45s var(--ease)}
 .stat:hover{transform:translateY(-4px);border-color:rgba(143,220,160,.42)}
-.flip-btn,.contact-card,.video-thumb,.footer__nav a{will-change:transform}
+.contact-card,.video-thumb,.footer__nav a{will-change:transform}
 
 /* ---------- 34. Responsive additions ---------- */
 @media (max-width:1080px){

@@ -373,10 +373,11 @@
         var box2 = card.getBoundingClientRect();
         var offset = ((box2.left + box2.width / 2) - mid) / span;
         var abs = Math.min(1, Math.abs(offset));
-        card.style.setProperty('--ry', (-offset * 17).toFixed(2) + 'deg');
+        var turn = Math.max(-1, Math.min(1, offset));
+        card.style.setProperty('--ry', (-turn * 17).toFixed(2) + 'deg');
         card.style.setProperty('--tz', (-abs * 120).toFixed(1) + 'px');
         card.style.setProperty('--sc', (1 - abs * 0.09).toFixed(3));
-        card.style.setProperty('--op', (1 - abs * 0.34).toFixed(3));
+        card.style.setProperty('--op', (1 - abs * 0.4).toFixed(3));
         var gap = Math.abs(box2.left + box2.width / 2 - mid);
         if (gap < nearestGap) { nearestGap = gap; nearest = Number(card.getAttribute('data-index')); }
       });
@@ -405,11 +406,59 @@
       });
     }
 
-    stage.addEventListener('scroll', requestLayout, { passive: true });
+    /* Track the strip while it moves, then settle once it stops. */
+    var settle = 0;
+
+    stage.addEventListener('scroll', function () {
+      stage.classList.add('is-scrolling');
+      requestLayout();
+      window.clearTimeout(settle);
+      settle = window.setTimeout(function () {
+        stage.classList.remove('is-scrolling');
+        layout();
+      }, 140);
+    }, { passive: true });
+
     window.addEventListener('resize', requestLayout);
     if ('ResizeObserver' in window) {
       new ResizeObserver(requestLayout).observe(stage);
     }
+
+    /* Desktop: the strip can be dragged with the mouse, like a swipe. */
+    var rtl = getComputedStyle(stage).direction === 'rtl';
+    var dragFrom = 0;
+    var dragStartX = 0;
+    var dragging = false;
+
+    stage.addEventListener('pointerdown', function (e) {
+      if (e.pointerType !== 'mouse' || e.button !== 0) return;
+      dragging = true;
+      dragStartX = e.clientX;
+      dragFrom = stage.scrollLeft;
+      stage.classList.add('is-dragging');
+      try {
+        if (stage.setPointerCapture) stage.setPointerCapture(e.pointerId);
+      } catch (err) { /* pointer already released */ }
+      e.preventDefault();
+    });
+
+    stage.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      var dx = e.clientX - dragStartX;
+      stage.scrollLeft = dragFrom + (rtl ? dx : -dx);
+    });
+
+    function endDrag() {
+      if (!dragging) return;
+      dragging = false;
+      stage.classList.remove('is-dragging');
+    }
+
+    stage.addEventListener('pointerup', endDrag);
+    stage.addEventListener('pointercancel', endDrag);
+    stage.addEventListener('pointerleave', function (e) {
+      if (e.pointerType === 'mouse') endDrag();
+    });
 
     syncUI();
     layout();
